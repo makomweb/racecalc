@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+@layer theme {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+/* Convert prefers-color-scheme media queries to class-based */
+@media (prefers-color-scheme: dark) {
+  html.dark {
+    --force-dark: 1;
+  }
+}
+
 /* Hide native number input spinners */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
