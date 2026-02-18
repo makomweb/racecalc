@@ -1,4 +1,5 @@
 import { Clock } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   return (
@@ -10,6 +11,7 @@ export default function Header() {
             Race Calculator
           </h1>
         </div>
+        <ThemeToggle />
       </div>
     </div>
   );
