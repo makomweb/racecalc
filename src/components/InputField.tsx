@@ -1,9 +1,9 @@
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Minus, Plus } from 'lucide-react';
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Minus, Plus } from "lucide-react";
 
-type FieldState = 'calculated' | 'edited' | 'constant';
+type FieldState = "calculated" | "edited" | "constant";
 
 interface InputFieldProps {
   label: string;
@@ -28,8 +28,8 @@ export default function InputField({
   error,
   state,
 }: InputFieldProps) {
-  const isDisabled = state === 'calculated';
-  const hasHighlight = state === 'calculated';
+  const isDisabled = state === "calculated";
+  const hasHighlight = state === "calculated";
 
   return (
     <div className="space-y-2">
@@ -54,7 +54,7 @@ export default function InputField({
           maxLength={maxLength}
           disabled={isDisabled}
           className={`flex-1 text-center font-mono text-xs sm:text-sm ${
-            hasHighlight ? 'border-blue-500 border-2' : ''
+            hasHighlight ? "border-blue-500 border-2" : ""
           }`}
         />
         <Button
@@ -67,7 +67,9 @@ export default function InputField({
           <Plus className="w-4 h-4" />
         </Button>
       </div>
-      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+      )}
     </div>
   );
 }
