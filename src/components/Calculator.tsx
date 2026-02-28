@@ -277,47 +277,40 @@ export default function Calculator() {
               <PresetButtons presets={PRESETS} onPreset={handlePreset} />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {(() => {
-                  const states = getFieldStates();
-                  return (
-                    <>
-                      <InputField
-                        label="Distance (km)"
-                        value={distance}
-                        placeholder="0.00"
-                        onChange={handleDistanceChange}
-                        onIncrement={incrementDistance}
-                        onDecrement={decrementDistance}
-                        error={errors.distance}
-                        state={states.distance}
-                      />
+                <InputField
+                  label="Distance (km)"
+                  value={distance}
+                  placeholder="0.00"
+                  onChange={handleDistanceChange}
+                  onIncrement={incrementDistance}
+                  onDecrement={decrementDistance}
+                  error={errors.distance}
+                  state={getFieldStates().distance}
+                />
 
-                      <InputField
-                        label="Pace (min/km)"
-                        value={pace}
-                        placeholder="MM:SS"
-                        maxLength={5}
-                        onChange={handlePaceChange}
-                        onIncrement={incrementPace}
-                        onDecrement={decrementPace}
-                        error={errors.pace}
-                        state={states.pace}
-                      />
+                <InputField
+                  label="Pace (min/km)"
+                  value={pace}
+                  placeholder="MM:SS"
+                  maxLength={5}
+                  onChange={handlePaceChange}
+                  onIncrement={incrementPace}
+                  onDecrement={decrementPace}
+                  error={errors.pace}
+                  state={getFieldStates().pace}
+                />
 
-                      <InputField
-                        label="Time (HH:MM:SS)"
-                        value={time}
-                        placeholder="HH:MM:SS"
-                        maxLength={8}
-                        onChange={handleTimeChange}
-                        onIncrement={incrementTime}
-                        onDecrement={decrementTime}
-                        error={errors.time}
-                        state={states.time}
-                      />
-                    </>
-                  );
-                })()}
+                <InputField
+                  label="Time (HH:MM:SS)"
+                  value={time}
+                  placeholder="HH:MM:SS"
+                  maxLength={8}
+                  onChange={handleTimeChange}
+                  onIncrement={incrementTime}
+                  onDecrement={decrementTime}
+                  error={errors.time}
+                  state={getFieldStates().time}
+                />
               </div>
 
               <ModeSelector
