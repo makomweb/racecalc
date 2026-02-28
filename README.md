@@ -1,6 +1,6 @@
 # Race Calculator
 
-![app-ci-workflow](https://github.com/makomweb/racecalc/actions/workflows/tests.yaml/badge.svg)
+![app-ci-workflow](https://github.com/makomweb/racecalc/actions/workflows/app-ci.yaml/badge.svg)
 
 Fast, friendly, race-ready.
 
