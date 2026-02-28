@@ -167,25 +167,25 @@ export default function Calculator() {
       setEditedField("time");
       setErrors((prev) => ({ ...prev, time: undefined }));
 
-      if (value && distance && pace && calculateMode !== "time") {
+      if (value && calculateMode !== "time") {
         if (!validateTime(value)) {
           setErrors((prev) => ({ ...prev, time: "HH:MM:SS format" }));
           return;
         }
 
         const timeSeconds = timeToSeconds(value);
-        const paceSeconds = paceToSeconds(pace);
 
-        if (timeSeconds > 0 && paceSeconds > 0) {
-          if (calculateMode === "distance") {
+        if (calculateMode === "distance" && distance && pace) {
+          const paceSeconds = paceToSeconds(pace);
+          if (timeSeconds > 0 && paceSeconds > 0) {
             const newDistance = calculateDistance(timeSeconds, paceSeconds);
             setDistance(newDistance);
-          } else if (calculateMode === "pace") {
-            const numDist = parseFloat(distance);
-            if (!isNaN(numDist) && numDist > 0) {
-              const newPace = secondsToPace(timeSeconds / numDist);
-              setPace(newPace);
-            }
+          }
+        } else if (calculateMode === "pace" && distance) {
+          const numDist = parseFloat(distance);
+          if (timeSeconds > 0 && !isNaN(numDist) && numDist > 0) {
+            const newPace = secondsToPace(timeSeconds / numDist);
+            setPace(newPace);
           }
         }
       }
