@@ -3,6 +3,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Minus, Plus } from 'lucide-react';
 
+type FieldState = 'calculated' | 'edited' | 'constant';
+
 interface InputFieldProps {
   label: string;
   value: string;
@@ -12,6 +14,7 @@ interface InputFieldProps {
   onIncrement: () => void;
   onDecrement: () => void;
   error?: string;
+  state?: FieldState;
 }
 
 export default function InputField({
@@ -23,7 +26,11 @@ export default function InputField({
   onIncrement,
   onDecrement,
   error,
+  state,
 }: InputFieldProps) {
+  const isDisabled = state === 'calculated';
+  const hasHighlight = state === 'calculated';
+
   return (
     <div className="space-y-2">
       <Label className="text-xs sm:text-sm font-normal text-slate-600 dark:text-slate-400">
@@ -35,6 +42,7 @@ export default function InputField({
           variant="outline"
           size="icon"
           className="h-11 w-11 sm:h-10 sm:w-10"
+          disabled={isDisabled}
         >
           <Minus className="w-4 h-4" />
         </Button>
@@ -44,13 +52,17 @@ export default function InputField({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           maxLength={maxLength}
-          className="flex-1 text-center font-mono text-xs sm:text-sm"
+          disabled={isDisabled}
+          className={`flex-1 text-center font-mono text-xs sm:text-sm ${
+            hasHighlight ? 'border-blue-500 border-2' : ''
+          }`}
         />
         <Button
           onClick={onIncrement}
           variant="outline"
           size="icon"
           className="h-11 w-11 sm:h-10 sm:w-10"
+          disabled={isDisabled}
         >
           <Plus className="w-4 h-4" />
         </Button>

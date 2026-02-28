@@ -22,6 +22,13 @@ type ValidationError = {
 };
 
 type CalculateMode = 'distance' | 'pace' | 'time';
+type FieldState = 'calculated' | 'edited' | 'constant';
+
+interface FieldStates {
+  distance: FieldState;
+  pace: FieldState;
+  time: FieldState;
+}
 
 const PRESETS: Preset[] = [
   { label: '5K', distance: '5.00' },
@@ -36,6 +43,36 @@ export default function Calculator() {
   const [time, setTime] = useState('00:55:00');
   const [calculateMode, setCalculateMode] = useState<CalculateMode>('time');
   const [errors, setErrors] = useState<ValidationError>({});
+  const [editedField, setEditedField] = useState<'distance' | 'pace' | 'time' | null>(null);
+
+  const getFieldStates = (): FieldStates => {
+    return {
+      distance:
+        calculateMode === 'distance'
+          ? 'calculated'
+          : editedField === 'distance'
+            ? 'edited'
+            : editedField === null
+              ? 'edited'
+              : 'constant',
+      pace:
+        calculateMode === 'pace'
+          ? 'calculated'
+          : editedField === 'pace'
+            ? 'edited'
+            : editedField === null
+              ? 'edited'
+              : 'constant',
+      time:
+        calculateMode === 'time'
+          ? 'calculated'
+          : editedField === 'time'
+            ? 'edited'
+            : editedField === null
+              ? 'edited'
+              : 'constant',
+    };
+  };
 
   const validateTime = (timeStr: string): boolean => {
     if (!timeStr) return false;
@@ -60,6 +97,7 @@ export default function Calculator() {
 
   const handleDistanceChange = useCallback((value: string) => {
     setDistance(value);
+    setEditedField('distance');
     setErrors((prev) => ({ ...prev, distance: undefined }));
 
     if (value && pace && calculateMode !== 'distance') {
@@ -69,16 +107,25 @@ export default function Calculator() {
       }
 
       const paceSeconds = paceToSeconds(pace);
-      if (paceSeconds > 0 && calculateMode === 'time') {
+      if (paceSeconds > 0) {
         const numValue = parseFloat(value);
-        const newTime = calculateTime(numValue, paceSeconds);
-        setTime(newTime);
+        if (calculateMode === 'time') {
+          const newTime = calculateTime(numValue, paceSeconds);
+          setTime(newTime);
+        } else if (calculateMode === 'pace') {
+          const timeSeconds = timeToSeconds(time);
+          if (timeSeconds > 0) {
+            const newPace = secondsToPace(timeSeconds / numValue);
+            setPace(newPace);
+          }
+        }
       }
     }
-  }, [pace, calculateMode]);
+  }, [pace, time, calculateMode]);
 
   const handlePaceChange = useCallback((value: string) => {
     setPace(value);
+    setEditedField('pace');
     setErrors((prev) => ({ ...prev, pace: undefined }));
 
     if (value && distance && calculateMode !== 'pace') {
@@ -100,6 +147,12 @@ export default function Calculator() {
               const newDistance = calculateDistance(timeSeconds, paceSeconds);
               setDistance(newDistance);
             }
+          } else if (calculateMode === 'pace') {
+            const timeSeconds = timeToSeconds(time);
+            if (timeSeconds > 0) {
+              const newPace = secondsToPace(timeSeconds / numDist);
+              setPace(newPace);
+            }
           }
         }
       }
@@ -108,6 +161,7 @@ export default function Calculator() {
 
   const handleTimeChange = useCallback((value: string) => {
     setTime(value);
+    setEditedField('time');
     setErrors((prev) => ({ ...prev, time: undefined }));
 
     if (value && distance && pace && calculateMode !== 'time') {
@@ -167,7 +221,7 @@ export default function Calculator() {
   const incrementPace = useCallback(() => {
     const paceSeconds = paceToSeconds(pace);
     if (paceSeconds >= 0) {
-      const newSeconds = paceSeconds + 30;
+      const newSeconds = paceSeconds + 10;
       const newPace = secondsToPace(newSeconds);
       handlePaceChange(newPace);
     }
@@ -175,8 +229,8 @@ export default function Calculator() {
 
   const decrementPace = useCallback(() => {
     const paceSeconds = paceToSeconds(pace);
-    if (paceSeconds > 30) {
-      const newSeconds = paceSeconds - 30;
+    if (paceSeconds > 10) {
+      const newSeconds = paceSeconds - 10;
       const newPace = secondsToPace(newSeconds);
       handlePaceChange(newPace);
     }
@@ -184,15 +238,15 @@ export default function Calculator() {
 
   const incrementTime = useCallback(() => {
     const timeSeconds = timeToSeconds(time);
-    const newSeconds = timeSeconds + 300;
+    const newSeconds = timeSeconds + 60;
     const newTime = secondsToTime(newSeconds);
     handleTimeChange(newTime);
   }, [time, handleTimeChange]);
 
   const decrementTime = useCallback(() => {
     const timeSeconds = timeToSeconds(time);
-    if (timeSeconds > 300) {
-      const newSeconds = timeSeconds - 300;
+    if (timeSeconds > 60) {
+      const newSeconds = timeSeconds - 60;
       const newTime = secondsToTime(newSeconds);
       handleTimeChange(newTime);
     }
@@ -209,37 +263,47 @@ export default function Calculator() {
               <PresetButtons presets={PRESETS} onPreset={handlePreset} />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <InputField
-                  label="Distance (km)"
-                  value={distance}
-                  placeholder="0.00"
-                  onChange={handleDistanceChange}
-                  onIncrement={incrementDistance}
-                  onDecrement={decrementDistance}
-                  error={errors.distance}
-                />
+                {(() => {
+                  const states = getFieldStates();
+                  return (
+                    <>
+                      <InputField
+                        label="Distance (km)"
+                        value={distance}
+                        placeholder="0.00"
+                        onChange={handleDistanceChange}
+                        onIncrement={incrementDistance}
+                        onDecrement={decrementDistance}
+                        error={errors.distance}
+                        state={states.distance}
+                      />
 
-                <InputField
-                  label="Pace (min/km)"
-                  value={pace}
-                  placeholder="MM:SS"
-                  maxLength={5}
-                  onChange={handlePaceChange}
-                  onIncrement={incrementPace}
-                  onDecrement={decrementPace}
-                  error={errors.pace}
-                />
+                      <InputField
+                        label="Pace (min/km)"
+                        value={pace}
+                        placeholder="MM:SS"
+                        maxLength={5}
+                        onChange={handlePaceChange}
+                        onIncrement={incrementPace}
+                        onDecrement={decrementPace}
+                        error={errors.pace}
+                        state={states.pace}
+                      />
 
-                <InputField
-                  label="Time (HH:MM:SS)"
-                  value={time}
-                  placeholder="HH:MM:SS"
-                  maxLength={8}
-                  onChange={handleTimeChange}
-                  onIncrement={incrementTime}
-                  onDecrement={decrementTime}
-                  error={errors.time}
-                />
+                      <InputField
+                        label="Time (HH:MM:SS)"
+                        value={time}
+                        placeholder="HH:MM:SS"
+                        maxLength={8}
+                        onChange={handleTimeChange}
+                        onIncrement={incrementTime}
+                        onDecrement={decrementTime}
+                        error={errors.time}
+                        state={states.time}
+                      />
+                    </>
+                  );
+                })()}
               </div>
 
               <ModeSelector currentMode={calculateMode} onChange={setCalculateMode} />
