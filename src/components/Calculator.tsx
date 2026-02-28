@@ -103,24 +103,24 @@ export default function Calculator() {
       setEditedField("distance");
       setErrors((prev) => ({ ...prev, distance: undefined }));
 
-      if (value && pace && calculateMode !== "distance") {
+      if (value && calculateMode !== "distance") {
         if (!validateDistance(value)) {
           setErrors((prev) => ({ ...prev, distance: "Must be positive" }));
           return;
         }
 
-        const paceSeconds = paceToSeconds(pace);
-        if (paceSeconds > 0) {
-          const numValue = parseFloat(value);
-          if (calculateMode === "time") {
+        const numValue = parseFloat(value);
+        if (calculateMode === "time" && pace) {
+          const paceSeconds = paceToSeconds(pace);
+          if (paceSeconds > 0) {
             const newTime = calculateTime(numValue, paceSeconds);
             setTime(newTime);
-          } else if (calculateMode === "pace") {
-            const timeSeconds = timeToSeconds(time);
-            if (timeSeconds > 0) {
-              const newPace = secondsToPace(timeSeconds / numValue);
-              setPace(newPace);
-            }
+          }
+        } else if (calculateMode === "pace") {
+          const timeSeconds = timeToSeconds(time);
+          if (timeSeconds > 0) {
+            const newPace = secondsToPace(timeSeconds / numValue);
+            setPace(newPace);
           }
         }
       }
