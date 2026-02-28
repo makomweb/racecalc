@@ -153,12 +153,6 @@ export default function Calculator() {
                 const newDistance = calculateDistance(timeSeconds, paceSeconds);
                 setDistance(newDistance);
               }
-            } else if (calculateMode === "pace") {
-              const timeSeconds = timeToSeconds(time);
-              if (timeSeconds > 0) {
-                const newPace = secondsToPace(timeSeconds / numDist);
-                setPace(newPace);
-              }
             }
           }
         }
