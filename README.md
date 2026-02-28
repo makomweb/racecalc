@@ -21,6 +21,11 @@ Screenshots:
 Quick start:
 
 ```bash
+# local development:
 npm install
 npm run dev
+
+# maintain dependencies:
+npm update --save
+npm audit
 ```
