@@ -34,16 +34,13 @@ const applyTheme = (theme: Theme) => {
   }
 };
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+const getInitialTheme = (): Theme => {
+  const saved = localStorage.getItem("theme") as Theme | null;
+  return saved || "system";
+};
 
-  // Load saved theme on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme | null;
-    const themeToUse = saved || "system";
-    setThemeState(themeToUse);
-    applyTheme(themeToUse);
-  }, []);
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   // Apply theme whenever it changes
   useEffect(() => {
@@ -73,6 +70,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
