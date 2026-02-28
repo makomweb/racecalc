@@ -2,9 +2,9 @@ name: App CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['20']
+        node-version: ["20"]
 
     steps:
       - uses: actions/checkout@v4
