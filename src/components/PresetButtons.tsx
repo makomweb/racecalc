@@ -1,4 +1,4 @@
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 
 export interface Preset {
   label: string;
@@ -10,7 +10,10 @@ interface PresetButtonsProps {
   onPreset: (distance: string) => void;
 }
 
-export default function PresetButtons({ presets, onPreset }: PresetButtonsProps) {
+export default function PresetButtons({
+  presets,
+  onPreset,
+}: PresetButtonsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       {presets.map((preset) => (

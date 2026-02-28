@@ -1,5 +1,5 @@
-import { Clock } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import { Clock } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   return (

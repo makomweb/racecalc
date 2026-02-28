@@ -1,5 +1,7 @@
 # Race Calculator
 
+![app-ci-workflow](https://github.com/makomweb/racecalc/actions/workflows/app-ci.yaml/badge.svg)
+
 Fast, friendly, race-ready.
 
 Static website for pace/time/distance calculations.
@@ -21,6 +23,11 @@ Screenshots:
 Quick start:
 
 ```bash
+# local development:
 npm install
 npm run dev
+
+# maintain dependencies:
+npm update --save
+npm audit
 ```
